@@ -6,29 +6,27 @@ using namespace std;
 class Solution {
 public:
     int trap(vector<int>& height) {
-         int i = 0, j = 0, result = 0;
         int n = height.size();
-
-        while (i < n) {
-            while (i < n && height[i] == 0) {
-                i++;
-            }
-            j = i + 1;
-            int max_height = 0;
-            while (j < n && height[j] < height[i]) {
-                max_height = max(max_height, height[j]);
-                j++;
-            }
-            if (j < n && height[j] >= height[i]) {
-                result += (j - i - 1) * (height[i] - max_height);
-                i = j;
-            } else {
-                i++;
-            }
+        if (n <= 2) {
+            return 0;
         }
-        return result;
+        vector<int> left(n), right(n);
+        left[0] = height[0];
+        for (int i = 1; i < n; i++) {
+            left[i] = max(left[i - 1], height[i]);
+        }
+        right[n - 1] = height[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            right[i] = max(right[i + 1], height[i]);
+        }
+        int trapped_water = 0;
+        for (int i = 0; i < n; i++) {
+            trapped_water += min(left[i], right[i]) - height[i];
+        }
+        return trapped_water;
     }
 };
+
 
 int main() {
     vector<int> height = {0,1,0,2,1,0,1,3,2,1,2,1};
